@@ -5,3 +5,4 @@ Gateways
    :maxdepth: 2
 
    gateways/linuxdevice
+   gateways/mockgateway

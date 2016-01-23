@@ -1,7 +1,8 @@
-import os
-
-
 class MockGateway(object):
+    """
+    This is a gateway designed to be used for doctest. It uses a ...ahem... deterministic pre-seeded random number
+    generator. This ensures that the values in the doctests are the same but random.
+    """
     def __init__(self):
         self.counter = 0
 
