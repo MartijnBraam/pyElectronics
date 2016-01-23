@@ -4,6 +4,30 @@ import math
 
 
 class BMP180(I2CDevice):
+    """
+    Interface for the Bosch BMP180 Digital pressure sensor
+
+    :Usage:
+
+    * Use load_calibration() to fetch the calibration data from the sensor
+    * Use temperature() and pressure() to get the current pressure
+
+    .. testsetup::
+
+        from electronics.gateways.mock import MockGateway
+        from electronics.devices.bmp180 import BMP180
+        gw = MockGateway()
+
+    :Example:
+
+    >>> sensor = BMP180(gw)
+    >>> sensor.load_calibration()
+    >>> sensor.temperature()
+    12.5
+    >>> sensor.pressure()
+    360808
+
+    """
     MODE_ULTRALOWPOWER = 0
     MODE_STANDARD = 1
     MODE_HIGHRESOLUTION = 2
@@ -34,6 +58,7 @@ class BMP180(I2CDevice):
         super().__init__(bus, address)
 
     def load_calibration(self):
+        """Load factory calibration data from device."""
         registers = self.i2c_read_register(0xAA, 22)
         (
             self.cal['AC1'],
@@ -61,6 +86,18 @@ class BMP180(I2CDevice):
         return ((msw << 8) + lsb) >> (8 - self.mode)
 
     def temperature(self):
+        """Get the temperature from the sensor.
+
+        :returns: The temperature in degree celcius as a float
+
+        :example:
+
+        >>> sensor = BMP180(gw)
+        >>> sensor.load_calibration()
+        >>> sensor.temperature()
+        21.4
+
+        """
         ut = self.get_raw_temp()
         x1 = ((ut - self.cal['AC6']) * self.cal['AC5']) >> 15
         x2 = (self.cal['MC'] << 11) // (x1 + self.cal['MD'])
@@ -69,30 +106,37 @@ class BMP180(I2CDevice):
 
     def pressure(self):
         """
-        Get pressure in mBar
+        Get barometric pressure in milibar
 
-        straight from the documentation after pythonizing the C code
-        :return:
+        :returns: The pressure in milibar as a int
+
+        :example:
+
+        >>> sensor = BMP180(gw)
+        >>> sensor.load_calibration()
+        >>> sensor.pressure()
+        75216
+
         """
         ut = self.get_raw_temp()
         up = self.get_raw_pressure()
-        x1 = (ut - self.cal['AC6']) * self.cal['AC5'] / math.pow(2, 15)
-        x2 = self.cal['MC'] * math.pow(2, 11) / (x1 + self.cal['MD'])
+        x1 = ((ut - self.cal['AC6']) * self.cal['AC5']) >> 15
+        x2 = (self.cal['MC'] << 11) // (x1 + self.cal['MD'])
         b5 = x1 + x2
         b6 = b5 - 4000
         x1 = (self.cal['B2'] * (b6 * b6) >> 12) >> 11
         x2 = (self.cal['AC2'] * b6) >> 11
         x3 = x1 + x2
-        b3 = (((self.cal['AC1'] * 4 + x3) << self.mode) + 2) / 4
+        b3 = (((self.cal['AC1'] * 4 + x3) << self.mode) + 2) // 4
         x1 = (self.cal['AC3'] * b6) >> 13
         x2 = (self.cal['B1'] * ((b6 * b6) >> 12)) >> 16
         x3 = ((x1 + x2) + 2) >> 2
         b4 = (self.cal['AC4'] * (x3 + 32768)) >> 15
         b7 = (up - b3) * (50000 >> self.mode)
         if b7 < 0x80000000:
-            p = (b7 * 2) / b4
+            p = (b7 * 2) // b4
         else:
-            p = (b7 / b4) * 2
+            p = (b7 // b4) * 2
         x1 = (p >> 8) * (p >> 8)
         x1 = (x1 * 3038) >> 16
         x2 = (-7357 * p) >> 16
