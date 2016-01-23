@@ -30,7 +30,6 @@ inertia.wakeup()
 Read values from sensors
 
 ```python
-
 temperature = barometer.temperature()
 pressure = barometer.pressure()
 acceleration = inertia.acceleration()
