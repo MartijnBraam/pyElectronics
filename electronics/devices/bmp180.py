@@ -62,10 +62,10 @@ class BMP180(I2CDevice):
 
     def temperature(self):
         ut = self.get_raw_temp()
-        x1 = (ut - self.cal['AC6']) * self.cal['AC5'] / math.pow(2, 15)
-        x2 = self.cal['MC'] * math.pow(2, 11) / (x1 + self.cal['MD'])
+        x1 = ((ut - self.cal['AC6']) * self.cal['AC5']) >> 15
+        x2 = (self.cal['MC'] << 11) // (x1 + self.cal['MD'])
         b5 = x1 + x2
-        return (b5 + 8) / math.pow(2, 4)
+        return ((b5 + 8) >> 4) / 10
 
     def pressure(self):
         """

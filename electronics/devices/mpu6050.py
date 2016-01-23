@@ -49,8 +49,9 @@ class MPU6050I2C(I2CDevice):
         if not self.awake:
             raise Exception("MPU6050 is in sleep mode, use wakeup()")
 
-        raw = self.i2c_read_register(0x41, 1)
-        return (raw / 340) + 36.53
+        raw = self.i2c_read_register(0x41, 2)
+        raw = struct.unpack('>h', raw)[0]
+        return round((raw / 340) + 36.53, 2)
 
     def acceleration(self):
         """
