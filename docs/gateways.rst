@@ -1,4 +1,7 @@
 Gateways
 ========
 
-.. automodule:: electronics
+.. toctree::
+   :maxdepth: 2
+
+   gateways/linuxdevice
