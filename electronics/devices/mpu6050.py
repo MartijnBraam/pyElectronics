@@ -12,27 +12,27 @@ class MPU6050I2C(I2CDevice):
     * Use wakeup() to start the MEMS units in the sensor or use instance of this class as a new context
     * Use temperature(), acceleration() and angular_rate() to read the sensor values
 
-    :Example:
-
-    .. code-block:: python
-
-        sensor = MPU6050I2C(gateway_class_instance)
-        sensor.set_range(accel=MPU6050I2C.RANGE_ACCEL_2G, gyro=MPU6050I2C.RANGE_GYRO_250DEG)
-
-        # Read a value
-        sensor.wakeup()
-        temperature = sensor.temperature()
-        sensor.sleep()
-
-        # Read a value using a context manager instead of wakeup() and sleep()
-        with sensor:
-            temperature = sensor.temperature()
-
     .. testsetup::
 
         from electronics.gateways.mock import MockGateway
         from electronics.devices.mpu6050 import MPU6050I2C
         gw = MockGateway()
+
+    :Example:
+
+    >>> sensor = MPU6050I2C(gw)
+    >>> sensor.set_range(accel=MPU6050I2C.RANGE_ACCEL_2G, gyro=MPU6050I2C.RANGE_GYRO_250DEG)
+    >>>
+    >>> # Read a value
+    >>> sensor.wakeup()
+    >>> sensor.temperature()
+    37.29
+    >>> sensor.sleep()
+    >>>
+    >>> # Read a value using a context manager instead of wakeup() and sleep()
+    >>> with sensor:
+    ...     sensor.temperature()
+    38.8
 
     """
     RANGE_ACCEL_2G = 0x00
@@ -94,7 +94,7 @@ class MPU6050I2C(I2CDevice):
         >>> sensor = MPU6050I2C(gw)
         >>> sensor.wakeup()
         >>> sensor.temperature()
-        46.36
+        49.38
         """
         if not self.awake:
             raise Exception("MPU6050 is in sleep mode, use wakeup()")
@@ -113,7 +113,7 @@ class MPU6050I2C(I2CDevice):
         >>> sensor = MPU6050I2C(gw)
         >>> sensor.wakeup()
         >>> sensor.acceleration()
-        (0.1259765625, 0.376953125, 0.6279296875)
+        (0.6279296875, 0.87890625, 1.1298828125)
         """
         if not self.awake:
             raise Exception("MPU6050 is in sleep mode, use wakeup()")
@@ -139,7 +139,7 @@ class MPU6050I2C(I2CDevice):
         >>> sensor = MPU6050I2C(gw)
         >>> sensor.wakeup()
         >>> sensor.angular_rate()
-        (0.87890625, 1.1298828125, 1.380859375)
+        (1.380859375, 1.6318359375, 1.8828125)
         """
         if not self.awake:
             raise Exception("MPU6050 is in sleep mode, use wakeup()")
