@@ -1,0 +1,4 @@
+Gateways
+========
+
+.. automodule:: electronics

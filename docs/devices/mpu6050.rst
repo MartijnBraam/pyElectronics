@@ -1,0 +1,5 @@
+MPU-6050
+========
+
+.. autoclass:: electronics.devices.mpu6050.MPU6050I2C
+   :members:

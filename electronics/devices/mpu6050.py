@@ -6,12 +6,16 @@ class MPU6050I2C(I2CDevice):
     """
     Interface to a MPU-6050 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device
 
-    Usage:
-        Use set_range() to specify the measurement range of to accel and gyro sensor
-        Use wakeup() to start the MEMS units in the sensor or use instance of this class as a new context
-        Use temperature(), acceleration() and angular_rate() to read the sensor values
+    :Usage:
 
-    Example:
+    * Use set_range() to specify the measurement range of to accel and gyro sensor
+    * Use wakeup() to start the MEMS units in the sensor or use instance of this class as a new context
+    * Use temperature(), acceleration() and angular_rate() to read the sensor values
+
+    :Example:
+
+    .. code-block:: python
+
         sensor = MPU6050I2C(gateway_class_instance)
         sensor.set_range(accel=MPU6050I2C.RANGE_ACCEL_2G, gyro=MPU6050I2C.RANGE_GYRO_250DEG)
 
@@ -23,6 +27,12 @@ class MPU6050I2C(I2CDevice):
         # Read a value using a context manager instead of wakeup() and sleep()
         with sensor:
             temperature = sensor.temperature()
+
+    .. testsetup::
+
+        from electronics.gateways.mock import MockGateway
+        from electronics.devices.mpu6050 import MPU6050I2C
+        gw = MockGateway()
 
     """
     RANGE_ACCEL_2G = 0x00
@@ -40,11 +50,24 @@ class MPU6050I2C(I2CDevice):
         self.gyro_range = None
         self.awake = False
         super().__init__(bus, address)
+        self.set_range(self.RANGE_ACCEL_16G, self.RANGE_GYRO_2000DEG)
 
     def set_range(self, accel=1, gyro=1):
         """Set the measurement range for the accel and gyro MEMS. Higher range means less resolution.
+
         :param accel: a RANGE_ACCEL_* constant
         :param gyro: a RANGE_GYRO_* constant
+
+        :Example:
+
+        .. code-block:: python
+
+            sensor = MPU6050I2C(gateway_class_instance)
+            sensor.set_range(
+                accel=MPU6050I2C.RANGE_ACCEL_2G,
+                gyro=MPU6050I2C.RANGE_GYRO_250DEG
+                )
+
         """
         self.i2c_write_register(0x1c, accel)
         self.i2c_write_register(0x1b, gyro)
@@ -62,7 +85,17 @@ class MPU6050I2C(I2CDevice):
         self.awake = False
 
     def temperature(self):
-        """Read the value for the internal temperature sensor."""
+        """Read the value for the internal temperature sensor.
+
+        :returns: Temperature in degree celcius as float
+
+        :Example:
+
+        >>> sensor = MPU6050I2C(gw)
+        >>> sensor.wakeup()
+        >>> sensor.temperature()
+        46.36
+        """
         if not self.awake:
             raise Exception("MPU6050 is in sleep mode, use wakeup()")
 
@@ -71,7 +104,17 @@ class MPU6050I2C(I2CDevice):
         return round((raw / 340) + 36.53, 2)
 
     def acceleration(self):
-        """Return the acceleration for every axis in g."""
+        """Return the acceleration in G's
+
+        :returns: Acceleration for every axis as a tuple
+
+        :Example:
+
+        >>> sensor = MPU6050I2C(gw)
+        >>> sensor.wakeup()
+        >>> sensor.acceleration()
+        (0.1259765625, 0.376953125, 0.6279296875)
+        """
         if not self.awake:
             raise Exception("MPU6050 is in sleep mode, use wakeup()")
 
@@ -87,7 +130,17 @@ class MPU6050I2C(I2CDevice):
         return x / scale, y / scale, z / scale
 
     def angular_rate(self):
-        """Return the angular rate for every axis in degree/second."""
+        """Return the angular rate for every axis in degree/second.
+
+        :returns: Angular rate for every axis as a tuple
+
+        :Example:
+
+        >>> sensor = MPU6050I2C(gw)
+        >>> sensor.wakeup()
+        >>> sensor.angular_rate()
+        (0.87890625, 1.1298828125, 1.380859375)
+        """
         if not self.awake:
             raise Exception("MPU6050 is in sleep mode, use wakeup()")
 
