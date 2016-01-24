@@ -3,6 +3,29 @@ import struct
 
 
 class HMC5883L(I2CDevice):
+    """Interface for the Honeywell 3-Axis Digital Compass IC HMC5883L
+
+    :Usage:
+
+    * Use config() to specify the filtering and datarate
+    * Use set_resolution() to configure the gain for the internal ADC
+    * Use raw() and gauss() to get the sensor values
+
+    .. testsetup::
+
+        from electronics.gateways.mock import MockGateway
+        from electronics.devices.hmc5883l import HMC5883L
+        gw = MockGateway()
+
+    :Example:
+
+    >>> sensor = HMC5883L(gw)
+    >>> sensor.config(averaging=4, datarate=15)
+    >>> sensor.set_resolution(1090)
+    >>> # Read a value
+    >>> sensor.gauss()
+    (2.3736, 7.1024, 11.831199999999999)
+    """
     MODE_NORMAL = 0
     MODE_POSITIVE_BIAS = 1
     MODE_NEGATIVE_BIAS = 2
@@ -18,7 +41,6 @@ class HMC5883L(I2CDevice):
         :param averaging: Sets the numer of samples that are internally averaged
         :param datarate: Datarate in hertz
         :param mode: one of the MODE_* constants
-        :return:
         """
         averaging_conf = {
             1: 0,
@@ -90,20 +112,30 @@ class HMC5883L(I2CDevice):
         config_b &= options[resolution] << 5
         self.i2c_write_register(0x01, config_b)
 
-    def get_raw(self):
+    def raw(self):
         """
         Get the magnetometer values as raw data from the sensor as tuple (x,y,z)
-        :return:
+
+        :example:
+
+        >>> sensor = HMC5883L(gw)
+        >>> sensor.raw()
+        (3342, 3856, 4370)
         """
         result = self.i2c_read_register(0x03, 6)
         return struct.unpack('>HHH', result)
 
-    def get_gauss(self):
+    def gauss(self):
         """
         Get the magnetometer values as gauss for each axis as a tuple (x,y,z)
-        :return:
+
+        :example:
+
+        >>> sensor = HMC5883L(gw)
+        >>> sensor.gauss()
+        (16.56, 21.2888, 26.017599999999998)
         """
-        raw = self.get_raw()
+        raw = self.raw()
         factors = {
             1370: 0.73,
             1090: 0.92,

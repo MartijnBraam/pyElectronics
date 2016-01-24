@@ -1,0 +1,5 @@
+HMC-5883L
+=========
+
+.. autoclass:: electronics.devices.hmc5883l.HMC5883L
+   :members:

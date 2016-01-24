@@ -6,3 +6,4 @@ Devices
 
    devices/mpu6050
    devices/bmp180
+   devices/hmc5883l
