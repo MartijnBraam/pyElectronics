@@ -1,5 +1,7 @@
 ## Usage
 
+The full documentation is at: http://pyelectronics.brixit.nl/docs/
+
 First create a instance of a gateway
 
 ```python
