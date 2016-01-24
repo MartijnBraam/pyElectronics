@@ -20,10 +20,10 @@ class LinuxDevice(object):
         self.i2c_index = i2c_bus_index
         self.bus = smbus.SMBus(i2c_bus_index)
 
-    def i2c_write_register(self, address, register, bytes):
-        if isinstance(bytes, int):
-            bytes = [bytes]
-        for b in bytes:
+    def i2c_write_register(self, address, register, data):
+        if isinstance(data, int):
+            data = [data]
+        for b in data:
             self.bus.write_byte_data(address, register, b)
 
     def i2c_read_register(self, address, register, length):
