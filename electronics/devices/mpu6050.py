@@ -74,6 +74,20 @@ class MPU6050I2C(I2CDevice):
         self.accel_range = accel
         self.gyro_range = gyro
 
+    def set_slave_bus_bypass(self, enable):
+        """Put the aux i2c bus on the MPU-6050 in bypass mode, thus connecting it to the main i2c bus directly
+
+        Dont forget to use wakeup() or else the slave bus is unavailable
+        :param enable:
+        :return:
+        """
+        current = self.i2c_read_register(0x37, 1)[0]
+        if enable:
+            current |= 0b00000010
+        else:
+            current &= 0b11111101
+        self.i2c_write_register(0x37, current)
+
     def wakeup(self):
         """Wake the sensor from sleep."""
         self.i2c_write_register(0x6b, 0x00)

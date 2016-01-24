@@ -7,7 +7,7 @@ class HMC5883L(I2CDevice):
     MODE_POSITIVE_BIAS = 1
     MODE_NEGATIVE_BIAS = 2
 
-    def __init__(self, bus, address=0x3c):
+    def __init__(self, bus, address=0x1e):
         self.resolution = 1090
         super().__init__(bus, address)
 
