@@ -20,7 +20,7 @@ class LM75(I2CDevice):
 
     >>> sensor = LM75(gw)
     >>> sensor.temperature()
-    37.29
+    1.0078125
     """
 
     def __init__(self, bus, address=0x49):
