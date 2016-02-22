@@ -7,6 +7,11 @@ connecting to stuff through the Raspberry Pi gpio with the i2c kernel driver and
 Usage
 -----
 
+Read the full docs at pythonhosted_.
+
+.. _pythonhosted: https://pythonhosted.org/pyelectronics/index.html
+
+
 First create a instance of a gateway::
 
     from electronics.gateways import BusPirate
