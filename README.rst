@@ -4,6 +4,13 @@ pyElectronics
 This is a python library for using electronics (like i2c or spi devices) with a unified interface. It currently supports
 connecting to stuff through the Raspberry Pi gpio with the i2c kernel driver and using the Bus Pirate.
 
+Installation
+------------
+
+Install it from pypi::
+
+    $ pip3 install pyelectronics
+
 Usage
 -----
 
