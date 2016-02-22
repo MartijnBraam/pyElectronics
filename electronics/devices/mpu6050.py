@@ -14,8 +14,8 @@ class MPU6050I2C(I2CDevice):
 
     .. testsetup::
 
-        from electronics.gateways.mock import MockGateway
-        from electronics.devices.mpu6050 import MPU6050I2C
+        from electronics.gateways import MockGateway
+        from electronics.devices import MPU6050I2C
         gw = MockGateway()
 
     :Example:

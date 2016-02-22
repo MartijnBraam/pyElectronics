@@ -13,8 +13,8 @@ class HMC5883L(I2CDevice):
 
     .. testsetup::
 
-        from electronics.gateways.mock import MockGateway
-        from electronics.devices.hmc5883l import HMC5883L
+        from electronics.gateways import MockGateway
+        from electronics.devices import HMC5883L
         gw = MockGateway()
 
     :Example:

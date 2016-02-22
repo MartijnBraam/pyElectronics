@@ -9,7 +9,7 @@ class BusPirate(object):
     devices probably work.
 
     :example:
-    >>> from electronics.gateways.buspirate import BusPirate
+    >>> from electronics.gateways import BusPirate
     >>> # Open the Bus Pirate at the first USB-serial port
     >>> gw = BusPirate("/dev/ttyUSB0") # doctest: +SKIP
     >>> # It is also possible to specify the baudrate
@@ -21,8 +21,8 @@ class BusPirate(object):
     configuration at runtime with the set_peripheral command.
 
     :example:
-    >>> from electronics.gateways.buspirate import BusPirate
-    >>> from electronics.devices.lm75 import LM75
+    >>> from electronics.gateways import BusPirate
+    >>> from electronics.devices import LM75
     >>> # Open the Bus Pirate
     >>> gw = BusPirate("/dev/ttyUSB0") # doctest: +SKIP
     >>> # Enable the power supply and the pull-ups in the next mode switch
@@ -32,7 +32,7 @@ class BusPirate(object):
     >>> sensor = LM75(gw) # doctest: +SKIP
     >>> # The power and pullup is now enabled.
     >>> # Changing peripherals at runtime:
-    >>> gw.set_peripheral(pullup=False, aux=True)
+    >>> gw.set_peripheral(pullup=False, aux=True) # doctest: +SKIP
     >>> # The pullup is now  disabled and the aux pin set to VCC
 
     :param device: The path to the unix device created when plugging in the Bus Pirate.

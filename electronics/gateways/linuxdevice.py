@@ -9,7 +9,7 @@ class LinuxDevice(object):
     Linux gives every i2c bus a number. For the Raspberry Pi 2 this is "1"
 
     :example:
-    >>> from electronics.gateways.linuxdevice import LinuxDevice
+    >>> from electronics.gateways import LinuxDevice
     >>> # Open /dev/i2c-1
     >>> gw = LinuxDevice(1) # doctest: +SKIP
 

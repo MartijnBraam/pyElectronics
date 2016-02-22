@@ -13,13 +13,12 @@ Usage
 
 To use a sensor first create a instance of the gateway you wil be using. In this case the MockGateway for testing
 
-    >>> from electronics.gateways.mock import MockGateway
+    >>> from electronics.gateways import MockGateway
     >>> gw = MockGateway()
 
 Then initialize the sensors that are connected to the bus
 
-    >>> from electronics.devices.bmp180 import BMP180
-    >>> from electronics.devices.mpu6050 import MPU6050I2C
+    >>> from electronics.devices import BMP180, MPU6050I2C
     >>> barometer = BMP180(gw)
     >>> sixaxis = MPU6050I2C(gw)
     >>>

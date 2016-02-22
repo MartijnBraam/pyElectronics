@@ -1,6 +1,5 @@
 from electronics.device import I2CDevice
 import struct
-import math
 
 
 class BMP180(I2CDevice):
@@ -14,8 +13,8 @@ class BMP180(I2CDevice):
 
     .. testsetup::
 
-        from electronics.gateways.mock import MockGateway
-        from electronics.devices.bmp180 import BMP180
+        from electronics.gateways import MockGateway
+        from electronics.devices import BMP180
         gw = MockGateway()
 
     :Example:
