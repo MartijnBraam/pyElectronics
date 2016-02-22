@@ -41,3 +41,11 @@ Read values from sensors::
     pressure = barometer.pressure()
     acceleration = inertia.acceleration()
     rotation = inertia.angular_rate()
+
+Supported chips/devices
+-----------------------
+
+* Bosch BMP180 Digital pressure sensor
+* Honeywell 3-Axis Digital Compass IC HMC5883L
+* MPU-6050 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device
+* NXP LM75A Digital temperature sensor
