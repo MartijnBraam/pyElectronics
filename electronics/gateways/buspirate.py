@@ -1,4 +1,5 @@
 import serial
+from electronics.pin import DigitalOutputPin
 
 
 class BusPirate(object):
@@ -179,3 +180,21 @@ class BusPirate(object):
     def i2c_write_register(self, address, register, data):
         if self.mode != self.MODE_I2C:
             self.switch_mode(self.MODE_I2C)
+
+    def get_aux_pin(self):
+        """ Get reference to the aux output on the Bus Pirate
+        :return: DigitalOutputPin instance
+        """
+        return DigitalOutputPin(self, '_write_aux')
+
+    def get_chip_select_pin(self):
+        """ Get reference to the chip select output on the Bus Pirate
+        :return: DigitalOutputPin instance
+        """
+        return DigitalOutputPin(self, '_write_cs')
+
+    def _write_aux(self, value):
+        self.set_peripheral(aux=value)
+
+    def _write_cs(self, value):
+        self.set_peripheral(chip_select=value)

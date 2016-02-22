@@ -1,15 +1,22 @@
 class PinReference(object):
-    pass
+    def __init__(self, chip_instance, method, arguments=None):
+        if arguments is None:
+            arguments = {}
+        self.chip = chip_instance
+        self.method = method
+        self.arguments = arguments
 
 
 class DigitalInputPin(PinReference):
     def read(self):
-        pass
+        m = getattr(self.chip, self.method)
+        return m(**self.arguments)
 
 
 class DigitalOutputPin(PinReference):
     def write(self, value):
-        pass
+        m = getattr(self.chip, self.method)
+        m(value, **self.arguments)
 
 
 class GPIOPin(PinReference):
