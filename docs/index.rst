@@ -15,6 +15,7 @@ Contents:
    contributing
    gateways
    devices
+   gpio
 
 
 Indices and tables
