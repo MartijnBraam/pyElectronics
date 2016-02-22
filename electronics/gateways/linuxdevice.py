@@ -34,3 +34,9 @@ class LinuxDevice(object):
             temp = struct.pack('@b', value)
             result += temp
         return result
+
+    def i2c_read(self, address, length):
+        raise NotImplementedError()
+
+    def i2c_write(self, address, data):
+        raise NotImplementedError()

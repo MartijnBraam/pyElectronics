@@ -6,6 +6,12 @@ class I2CDevice(object):
         self.i2c_bus = bus
         self.address = address
 
+    def i2c_read(self, length):
+        return self.i2c_bus.i2c_read(self.address, length)
+
+    def i2c_write(self, bytes):
+        return self.i2c_bus.i2c_write(self.address, bytes)
+
     def i2c_read_register(self, register, length):
         return self.i2c_bus.i2c_read_register(self.address, register, length)
 

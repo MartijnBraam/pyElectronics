@@ -3,11 +3,11 @@ import struct
 
 
 class LM75(I2CDevice):
-    def __init__(self, bus, address=0x48):
+    def __init__(self, bus, address=0x49):
         super().__init__(bus, address)
 
     def temperature(self):
-        result = self.i2c_read_register(0x00, 2)
+        result = self.i2c_read(2)
         value = struct.unpack('>H', result)[0]
 
         if value < 32768:
