@@ -1,0 +1,5 @@
+LM75
+====
+
+.. autoclass:: electronics.devices.lm75.LM75
+   :members:
