@@ -52,6 +52,10 @@ Read values from sensors::
 Supported chips/devices
 -----------------------
 
+`Read the contributing guide`_ to add devices
+
+.. _Read the contributing guide: http://pythonhosted.org/pyelectronics/contributing.html
+
 * Bosch BMP180 Digital pressure sensor
 * Honeywell 3-Axis Digital Compass IC HMC5883L
 * MPU-6050 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device
