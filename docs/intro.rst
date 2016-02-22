@@ -11,6 +11,10 @@ definitions for the chips that can be connected to one of the bus masters.
 Usage
 -----
 
+Read the full docs at pythonhosted_.
+
+.. _pythonhosted: https://pythonhosted.org/pyelectronics/index.html
+
 To use a sensor first create a instance of the gateway you wil be using. In this case the MockGateway for testing
 
     >>> from electronics.gateways import MockGateway
