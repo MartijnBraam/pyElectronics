@@ -4,6 +4,26 @@ pyElectronics
 This is a python library for using electronics (like i2c or spi devices) with a unified interface. It currently supports
 connecting to stuff through the Raspberry Pi gpio with the i2c kernel driver and using the Bus Pirate.
 
+Supported gateways
+------------------
+
+The gateways are the bridge between Linux and the hardware. Currently supported:
+
+* Bus Pirate v3
+* Raspberry Pi / other linux i2c_dev supported interfaces
+
+Supported chips/devices
+-----------------------
+
+`Read the contributing guide`_ to add devices
+
+.. _Read the contributing guide: http://pythonhosted.org/pyelectronics/contributing.html
+
+* Bosch BMP180 Digital pressure sensor
+* Honeywell 3-Axis Digital Compass IC HMC5883L
+* MPU-6050 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device
+* NXP LM75A Digital temperature sensor
+
 Installation
 ------------
 
@@ -48,15 +68,3 @@ Read values from sensors::
     pressure = barometer.pressure()
     acceleration = inertia.acceleration()
     rotation = inertia.angular_rate()
-
-Supported chips/devices
------------------------
-
-`Read the contributing guide`_ to add devices
-
-.. _Read the contributing guide: http://pythonhosted.org/pyelectronics/contributing.html
-
-* Bosch BMP180 Digital pressure sensor
-* Honeywell 3-Axis Digital Compass IC HMC5883L
-* MPU-6050 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device
-* NXP LM75A Digital temperature sensor
