@@ -1,10 +1,8 @@
 class PinReference(object):
     def __init__(self, chip_instance, method, arguments=None):
-        if arguments is None:
-            arguments = {}
         self.chip = chip_instance
         self.method = method
-        self.arguments = arguments
+        self.arguments = arguments or {}
 
 
 class DigitalInputPin(PinReference):
