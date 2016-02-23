@@ -1,6 +1,9 @@
 pyElectronics
 =============
 
+.. image:: https://travis-ci.org/MartijnBraam/pyElectronics.svg?branch=master
+    :target: https://travis-ci.org/MartijnBraam/pyElectronics
+
 This is a python library for using electronics (like i2c or spi devices) with a unified interface. It currently supports
 connecting to stuff through the Raspberry Pi gpio with the i2c kernel driver and using the Bus Pirate.
 
@@ -30,6 +33,18 @@ Installation
 Install it from pypi::
 
     $ pip3 install pyelectronics
+
+The various gateways have their own dependencies. Install the dependencies for the gateway you require::
+
+    # Requirements for the Raspberry Pi
+    $ pip3 install pysmbus
+
+    # Requirements for the Bus Pirate
+    $ pip3 install pyserial
+
+To run the doctests you need all dependencies. You can install them with the doctest requirements file::
+
+    $ pip3 install -r docs/doctest-requirements.txt
 
 Usage
 -----
