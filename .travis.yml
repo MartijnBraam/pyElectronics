@@ -6,6 +6,7 @@ python:
   - "3.5-dev"
   - "nightly"
 install:
+  - "pip install -q pyserial"
   - "pip install -q sphinx"
 script: "cd docs && make doctest"
 sudo: false
