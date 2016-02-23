@@ -1,0 +1,3 @@
+sphinx
+pyserial
+pysmbus
