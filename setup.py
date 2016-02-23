@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
         name='pyelectronics',
-        version='0.1.1',
+        version='0.1.2',
         packages=['electronics', 'electronics.devices', 'electronics.gateways'],
         url='https://github.com/MartijnBraam/pyElectronics',
         license='MIT',
