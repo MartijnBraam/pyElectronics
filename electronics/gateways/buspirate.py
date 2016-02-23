@@ -46,9 +46,10 @@ class BusPirate(object):
     MODE_UART = 3
     MODE_ONEWIRE = 4
 
-    def __init__(self, device, baud=115200):
+    def __init__(self, device, baud=115200, debug=False):
         self.device = serial.Serial(device, baud)
         self.mode = self.MODE_RAW
+        self.debug = debug
 
         self.pullup = False
         self.power = False
@@ -139,12 +140,12 @@ class BusPirate(object):
 
         self.device.write(packet)
 
-        status = self.device.read(1)
-        if status == b'\x00':
-            raise Exception('Read or write out of bounds')
+        if self.debug:
+            status = self.device.read(1)
+            if status == b'\x00':
+                raise Exception('Read or write out of bounds')
 
         self.device.write(bytearray(data))
-
         response = self.device.read(read_length + 1)
         if response[0] == 0x00:
             raise Exception('No ack from device')
@@ -161,15 +162,7 @@ class BusPirate(object):
         return self.i2c_write_then_read([read_address], length)
 
     def i2c_write(self, address, data):
-        packet = bytearray()
-        packet.append(0x02)
-        bulk = [address]
-        bulk.extend(data)
-        size = len(bulk) + 15
-        packet.append(size)
-        packet.extend(bulk)
-        packet.append(0x03)
-        self.device.write(packet)
+        self.i2c_write_then_read(data, 0)
 
     def i2c_read_register(self, address, register, length):
         if self.mode != self.MODE_I2C:
@@ -180,6 +173,10 @@ class BusPirate(object):
     def i2c_write_register(self, address, register, data):
         if self.mode != self.MODE_I2C:
             self.switch_mode(self.MODE_I2C)
+        write_address = address << 1
+        payload = [write_address, register]
+        payload.extend(data)
+        self.i2c_write_then_read(payload, 0)
 
     def get_aux_pin(self):
         """ Get reference to the aux output on the Bus Pirate
