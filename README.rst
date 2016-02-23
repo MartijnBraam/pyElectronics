@@ -1,7 +1,11 @@
 pyElectronics
 =============
 
-|Build Status| |PyPI version|
+.. image:: https://travis-ci.org/MartijnBraam/pyElectronics.svg?branch=master
+    :target: https://travis-ci.org/MartijnBraam/pyElectronics
+
+.. image:: https://badge.fury.io/py/pyelectronics.svg
+    :target: https://badge.fury.io/py/pyelectronics
 
 This is a python library for using electronics (like i2c or spi devices) with a unified interface. It currently supports
 connecting to stuff through the Raspberry Pi gpio with the i2c kernel driver and using the Bus Pirate.
@@ -82,9 +86,3 @@ Read values from sensors::
     pressure = barometer.pressure()
     acceleration = inertia.acceleration()
     rotation = inertia.angular_rate()
-
-
-.. |Build Status| https://travis-ci.org/MartijnBraam/pyElectronics.svg?branch=master
-   :target: https://travis-ci.org/MartijnBraam/pyElectronics
-.. |PyPI version| https://badge.fury.io/py/pyelectronics.svg
-   :target: https://badge.fury.io/py/pyelectronics
