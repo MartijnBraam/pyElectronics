@@ -1,0 +1,5 @@
+MCP23017
+========
+
+.. autoclass:: electronics.devices.mcp23017.MCP23017I2C
+   :members:

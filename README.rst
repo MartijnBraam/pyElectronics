@@ -29,6 +29,7 @@ Supported chips/devices
 * Honeywell 3-Axis Digital Compass IC HMC5883L
 * MPU-6050 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device
 * NXP LM75A Digital temperature sensor
+* Microchip MCP23017 16-Bit I/O Expander
 
 Installation
 ------------

@@ -8,3 +8,4 @@ Devices
    devices/bmp180
    devices/hmc5883l
    devices/lm75
+   devices/mcp23017

@@ -18,7 +18,59 @@ class MCP23017I2C(I2CDevice):
     :Example:
 
     >>> expander = MCP23017I2C(gw)
+    >>> # Set up a few ports
+    >>> expander.direction_A6 = MCP23017I2C.DIRECTION_OUTPUT
+    >>> expander.direction_A7 = MCP23017I2C.DIRECTION_OUTPUT
+    >>> expander.direction_B0 = MCP23017I2C.DIRECTION_OUTPUT
+    >>> # Send the new pin config to the expander chip
+    >>> expander.sync()
+    >>> # Set pin A7 high
+    >>> expander.write('A7', True)
+
+    Instead of manually setting pins to states on the expander you can also get a reference to the pins that you can
+    pass to other devices. For example: driving a HD44780 lcd.
+
+    :Example:
+
+    >>> expander = MCP23017I2C(gw)
+    >>> # Set all A pins to output mode
+    >>> expander.IODIRA = 0xff
+    >>> expander.sync()
+    >>> # Get references for all pins
+    >>> pins = expander.get_pins()
+    >>> # Give them names, not required
+    >>> datalines = pins[0:4]
+    >>> rs = pins[5]
+    >>> enable = pins[6]
+    >>> rw = pins[7]
+    >>> # Pass them to the hypothetical HD44780 module
+    >>> lcd = HD44780(gw, datapins=datalines, enable=enable, rs=rs, rw=rw) # doctest: +SKIP
+    >>> lcd.write("Hello pyElectronics") # doctest: +SKIP
+
+    Most operations on this module modify the copy of the registers in the class instance. If you modify one of the
+    register attributes or use the helper attributes (like direction_A0) then you need to call sync() to send the
+    modified registers to the chip.
+
+    Configuring pins with the helper attributes
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    This class exposes 4 helper attributes for every pin. For pin A0 this is:
+
+    * mcp23017.direction_A0
+    * mcp23017.polarity_A0
+    * mcp23017.pullup_A0
+    * mcp23017.value_A0
+
+    You can set the ``direction_x`` register to one of the ``mcp23017.DIRECTION_*`` constants to set the pin to input
+    or output mode. The ``polarity_x`` registers inverses the polarity for the pin. The ``pullup_x`` attribute can be
+    used to enable the internal pull-up resister for the pin on the chip. Use the ``value_x`` attribute to set the value
+    for the pin.
+
+    After you changed the state of the chip with these attributes you need to call the ``sync()`` method to actually
+    modify the registers on the device
     """
+
+
 
     DIRECTION_INPUT = True
     DIRECTION_OUTPUT = False
@@ -89,6 +141,12 @@ class MCP23017I2C(I2CDevice):
         setattr(self, register, reg)
 
     def read(self, pin):
+        """ Read the pin state of an input pin.
+        Make sure you put the pin in input modus with the IODIR* register or direction_* attribute first.
+
+        :param pin: The label for the pin to read. (Ex. A0)
+        :return: Boolean representing the input level
+        """
         port, pin = self.pin_to_port(pin)
         self.i2c_write([0x12 + port])
         raw = self.i2c_read(1)
@@ -96,6 +154,11 @@ class MCP23017I2C(I2CDevice):
         return (value & (1 << pin)) > 0
 
     def read_port(self, port):
+        """ Read the pin state of a whole port (8 pins)
+
+        :param port: use 'A' to read port A and 'B' for port b
+        :return: An int where every bit represents the input level.
+        """
         if port == 'A':
             raw = self.i2c_read_register(0x12, 1)
         elif port == 'B':
@@ -103,6 +166,12 @@ class MCP23017I2C(I2CDevice):
         return struct.unpack('>B', raw)[0]
 
     def write(self, pin, value):
+        """ Set the pin state.
+        Make sure you put the pin in output mode first.
+
+        :param pin: The label for the pin to write to. (Ex. A0)
+        :param value: Boolean representing the new state
+        """
         port, pin = self.pin_to_port(pin)
         portname = 'A'
         if port == 1:
@@ -111,6 +180,12 @@ class MCP23017I2C(I2CDevice):
         self.sync()
 
     def sync(self):
+        """ Upload the changed registers to the chip
+
+        This will check which register have been changed since the last sync and send them to the chip.
+        You need to call this method if you modify one of the register attributes (mcp23017.IODIRA for example) or
+        if you use one of the helper attributes (mcp23017.direction_A0 for example)
+        """
         registers = {
             0x00: 'IODIRA',
             0x01: 'IODIRB',
@@ -150,9 +225,17 @@ class MCP23017I2C(I2CDevice):
             self.write(pin, value)
 
     def get_pins(self):
+        """ Get a list containing references to all 16 pins of the chip."""
         result = []
         for a in range(0, 7):
             result.append(GPIOPin(self, '_action', {'pin': 'A{}'.format(a)}))
         for b in range(0, 7):
             result.append(GPIOPin(self, '_action', {'pin': 'B{}'.format(b)}))
         return result
+
+    def get_pin(self, name):
+        """ Get a reference to a named pin on the chip.
+        :param name: Name of the pin (Ex: A0)
+        :return: GPIOPin instance for the pin
+        """
+        return GPIOPin(self, '_action', {'pin': name})
