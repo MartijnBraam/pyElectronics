@@ -31,15 +31,15 @@ The Bus Pirate has an aux pin that can be used as an digital output::
     # Set the output of the pin
     aux.write(True)
 
-This hasn't been implemented yet but the example for an I2C port expander::
+Using a pin on a port expander::
 
     gw = BusPirate("/dev/ttyUSB0")
 
-    # This class doesn't exist yet
-    expander = MCP23017(gw)
+    # Initialize a i2c port expander
+    expander = MCP23017I2C(gw)
 
-    # Get a reference to pin 4
-    my_own_led_pin = expander.get_pin(4)
+    # Get a reference to pin 4 on port B
+    my_own_led_pin = expander.get_pin('B4')
 
     # Obligatory blink-a-led example
     for i in range(0, 20):
@@ -54,3 +54,64 @@ This hasn't been implemented yet but the example for an I2C port expander::
     display = HD4470(display_pins)
     display.write_text("Hello World!")
 
+
+GPIO Bus
+--------
+
+Sometimes (most of the times) you need to connect a data bus to gpio ports but they don't line op nice with a whole port.
+In that case you can use GPIOBus to put a bunch of GPIO pins together to create a virtual port. You can create a bus of
+any width this way::
+
+    gw = BusPirate("/dev/ttyUSB0")
+    expander = MCP23017I2C(gw)
+
+    pins = expander.get_pins()
+
+    # Use pin 5,6,7 and 2 from the port expander
+    buspins = pins[5:8]
+    buspins.append(pins[2])
+
+    # Create a bus
+    bus = GPIOBus(buspins)
+
+    # Write data to the bus
+    bus.write(13)
+
+The pins in the bus don't have any relation to eachother, they don't even have to be on the same chip::
+
+    gw = BusPirate("/dev/ttyUSB0")
+    expander = MCP23017I2C(gw)
+
+    # Get references for all the pins on the expander
+    pins = expander.get_pins()
+
+    # Get reference to the aux pin on the Bus Pirate
+    aux = gw.get_aux_pin()
+
+    # Use pin 5,6 and from the port expander
+    buspins = pins[5:8]
+
+    # Add the aux pin from the Bus Pirate
+    buspins.append(aux)
+
+    # Create a bus
+    bus = GPIOBus(buspins)
+
+    # Write data to the bus the same way as the previous example
+    bus.write(13)
+
+The problem is if your pins are open-drain, you get an even bigger problem if a subset of your pins is open-drain. You
+can individually invert pins in the bus on definition. This is not handled by the GPIOBus class but by the GPIOPins
+themselves::
+
+    # Get references for a bunch of leds
+    red = expander.get_pin('A0')
+    green = expander.get_pin('A1')
+    blue = gw.get_aux_pin()
+
+    # Define a bus with the expander pins inverted
+    colorbus = GPIOBus([~red, ~green, blue])
+
+    # Disco!
+    for i in range(0,8):
+        colorbus.write(i)

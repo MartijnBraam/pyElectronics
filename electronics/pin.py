@@ -1,8 +1,13 @@
 class PinReference(object):
-    def __init__(self, chip_instance, method, arguments=None):
+    def __init__(self, chip_instance, method, arguments=None, inverted=False):
         self.chip = chip_instance
         self.method = method
+        self.inverted = inverted
         self.arguments = arguments or {}
+
+    def __invert__(self):
+        t = type(self)
+        return t(self.chip, self.method, self.arguments, ~self.inverted)
 
 
 class DigitalInputPin(PinReference):
@@ -21,18 +26,22 @@ class GPIOPin(PinReference):
     MODE_INPUT = 0
     MODE_OUTPUT = 1
 
-    def __init__(self, chip_instance, method, arguments=None):
+    def __init__(self, chip_instance, method, arguments=None, inverted=False):
         self.mode = self.MODE_INPUT
-        super().__init__(chip_instance, method, arguments)
+        super().__init__(chip_instance, method, arguments, inverted)
 
     def set_mode(self, mode):
         self.mode = mode
 
     def read(self):
-        return False
+        m = getattr(self.chip, self.method)
+        return m(value=None, **self.arguments)
 
     def write(self, value):
-        pass
+        if self.inverted:
+            value = not value
+        m = getattr(self.chip, self.method)
+        m(value=value, **self.arguments)
 
 
 class AnalogOutputPin(PinReference):
