@@ -20,3 +20,6 @@ class MockGateway(object):
 
     def i2c_read_register(self, address, register, length):
         return self.i2c_read(address, length)
+
+    def i2c_write(self, address, bytes):
+        pass

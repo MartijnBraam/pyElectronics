@@ -13,6 +13,7 @@ class MCP23017I2C(I2CDevice):
 
         from electronics.gateways import MockGateway
         from electronics.devices import MCP23017I2C
+        import pprint
         gw = MockGateway()
 
     :Example:
@@ -69,8 +70,6 @@ class MCP23017I2C(I2CDevice):
     After you changed the state of the chip with these attributes you need to call the ``sync()`` method to actually
     modify the registers on the device
     """
-
-
 
     DIRECTION_INPUT = True
     DIRECTION_OUTPUT = False
@@ -144,6 +143,16 @@ class MCP23017I2C(I2CDevice):
         """ Read the pin state of an input pin.
         Make sure you put the pin in input modus with the IODIR* register or direction_* attribute first.
 
+        :Example:
+
+        >>> expander = MCP23017I2C(gw)
+        >>> # Read the logic level on pin B3
+        >>> expander.read('B3')
+        False
+        >>> # Read the logic level on pin A1
+        >>> expander.read('A1')
+        True
+
         :param pin: The label for the pin to read. (Ex. A0)
         :return: Boolean representing the input level
         """
@@ -155,6 +164,16 @@ class MCP23017I2C(I2CDevice):
 
     def read_port(self, port):
         """ Read the pin state of a whole port (8 pins)
+
+        :Example:
+
+        >>> expander = MCP23017I2C(gw)
+        >>> # Read pin A0-A7 as a int (A0 and A1 are high)
+        >>> expander.read_port('A')
+        3
+        >>> # Read pin B0-B7 as a int (B2 is high)
+        >>> expander.read_port('B')
+        4
 
         :param port: use 'A' to read port A and 'B' for port b
         :return: An int where every bit represents the input level.
@@ -239,17 +258,47 @@ class MCP23017I2C(I2CDevice):
             self.write(pin, value)
 
     def get_pins(self):
-        """ Get a list containing references to all 16 pins of the chip."""
+        """ Get a list containing references to all 16 pins of the chip.
+
+        :Example:
+
+        >>> expander = MCP23017I2C(gw)
+        >>> pins = expander.get_pins()
+        >>> pprint.pprint(pins)
+        [<GPIOPin A0 on MCP23017I2C>,
+         <GPIOPin A1 on MCP23017I2C>,
+         <GPIOPin A2 on MCP23017I2C>,
+         <GPIOPin A3 on MCP23017I2C>,
+         <GPIOPin A4 on MCP23017I2C>,
+         <GPIOPin A5 on MCP23017I2C>,
+         <GPIOPin A6 on MCP23017I2C>,
+         <GPIOPin B0 on MCP23017I2C>,
+         <GPIOPin B1 on MCP23017I2C>,
+         <GPIOPin B2 on MCP23017I2C>,
+         <GPIOPin B3 on MCP23017I2C>,
+         <GPIOPin B4 on MCP23017I2C>,
+         <GPIOPin B5 on MCP23017I2C>,
+         <GPIOPin B6 on MCP23017I2C>]
+
+
+        """
         result = []
         for a in range(0, 7):
-            result.append(GPIOPin(self, '_action', {'pin': 'A{}'.format(a)}))
+            result.append(GPIOPin(self, '_action', {'pin': 'A{}'.format(a)}, name='A{}'.format(a)))
         for b in range(0, 7):
-            result.append(GPIOPin(self, '_action', {'pin': 'B{}'.format(b)}))
+            result.append(GPIOPin(self, '_action', {'pin': 'B{}'.format(b)}, name='B{}'.format(b)))
         return result
 
     def get_pin(self, name):
         """ Get a reference to a named pin on the chip.
-        :param name: Name of the pin (Ex: A0)
+
+        :Example:
+
+        >>> expander = MCP23017I2C(gw)
+        >>> expander.get_pin('B3')
+        <GPIOPin B3 on MCP23017I2C>
+
+        :param name: Name of the pin (Ex: B3)
         :return: GPIOPin instance for the pin
         """
-        return GPIOPin(self, '_action', {'pin': name})
+        return GPIOPin(self, '_action', {'pin': name}, name=name)
