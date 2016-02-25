@@ -1,4 +1,7 @@
 class PinReference(object):
+    """ This is a reference to a pin on a gateway or a chip somewhere behind a gateway.
+    You should not use this class directly but use one of the subclasses
+    """
     def __init__(self, chip_instance, method, arguments=None, inverted=False):
         self.chip = chip_instance
         self.method = method
@@ -11,18 +14,33 @@ class PinReference(object):
 
 
 class DigitalInputPin(PinReference):
+    """ This is a reference to a pin that only has input capabilities """
+
     def read(self):
+        """ Get the logic input level for the pin
+
+        :return: True if the input is high
+        """
         m = getattr(self.chip, self.method)
         return m(**self.arguments)
 
 
 class DigitalOutputPin(PinReference):
+    """ This is a reference to a pin that only has output capabilities """
+
     def write(self, value):
+        """ Set the logic output level for the pin.
+
+        :type value: bool
+        :param value: True for a logic high
+        """
         m = getattr(self.chip, self.method)
         m(value, **self.arguments)
 
 
 class GPIOPin(PinReference):
+    """ This is a reference to a pin that can be used in input and output mode. This is most pins on microcontrollers
+    """
     MODE_INPUT = 0
     MODE_OUTPUT = 1
 
@@ -34,10 +52,19 @@ class GPIOPin(PinReference):
         self.mode = mode
 
     def read(self):
+        """ Get the logic input level for the pin
+
+        :return: True if the input is high
+        """
         m = getattr(self.chip, self.method)
         return m(value=None, **self.arguments)
 
     def write(self, value):
+        """ Set the logic output level for the pin.
+
+        :type value: bool
+        :param value: True for a logic high
+        """
         if self.inverted:
             value = not value
         m = getattr(self.chip, self.method)

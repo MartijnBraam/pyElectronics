@@ -1,6 +1,6 @@
 class GPIOBus(object):
-    """ This is a helper class for when your pins don't line up with ports.
-    """
+    """ This is a helper class for when your pins don't line up with ports. """
+
     def __init__(self, pins):
         self.pins = pins
         self.max = pow(2, len(pins)) - 1
