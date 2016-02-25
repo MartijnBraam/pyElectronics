@@ -87,3 +87,30 @@ Read values from sensors::
     pressure = barometer.pressure()
     acceleration = inertia.acceleration()
     rotation = inertia.angular_rate()
+
+Example with GPIO::
+
+    # Red led conected to the aux pin of the bus pirate
+    red_led = gw.get_aux_pin()
+    # Turn the led on
+    red_led.write(True)
+
+    # An Microchip port expander connected through I2C
+    expander = MCP23017I2C(gw, address=0x21)
+
+    # Get the pins for the two other leds that are connected
+    # to the port expander
+    green_led = expander.get_pin('A0')
+    blue_led = expander.get_pin('A1')
+
+    # Bundle the leds to a bus so you can address 8 colours as an int
+    # the pins on the port expander are open drain, they are inverted with the invert operator (~)
+    bus = GPIOBus([red_led, ~green_led, ~blue_led])
+    bus.write(0) # Black
+    bus.write(7) # White
+
+    # Disco!
+    while True:
+        for i in range(0,8):
+            bus.write(i)
+            sleep(0.2)
