@@ -179,6 +179,20 @@ class MCP23017I2C(I2CDevice):
         self._update_register('GPIO' + portname, pin, value)
         self.sync()
 
+    def write_port(self, port, value):
+        """ Use a whole port as a bus and write a byte to it.
+
+        :param port: Name of the port ('A' or 'B')
+        :param value: Value to write (0-255)
+        """
+        if port == 'A':
+            self.GPIOA = value
+        elif port == 'B':
+            self.GPIOB = value
+        else:
+            raise AttributeError('Port {} does not exist, use A or B'.format(port))
+        self.sync()
+
     def sync(self):
         """ Upload the changed registers to the chip
 
