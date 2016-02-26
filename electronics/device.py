@@ -27,3 +27,7 @@ class I2CDevice(object):
     def i2c_write_register(self, register, bytes):
         logging.debug('PC -> 0x{:02X} reg 0x{:02X}: {}'.format(self.address, register, repr(bytes)))
         return self.i2c_bus.i2c_write_register(self.address, register, bytes)
+
+
+class GPIODevice(object):
+    pass
