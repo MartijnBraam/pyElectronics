@@ -30,6 +30,7 @@ Supported chips/devices
 * MPU-6050 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device
 * NXP LM75A Digital temperature sensor
 * Microchip MCP23017 16-Bit I/O Expander
+* 7-segment displays without multiplexing
 
 Installation
 ------------
