@@ -9,4 +9,4 @@ Devices
    devices/hmc5883l
    devices/lm75
    devices/mcp23017
-   devices/sevensegment
+   devices/segmentdisplay

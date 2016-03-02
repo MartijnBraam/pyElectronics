@@ -3,6 +3,7 @@ class GPIOBus(object):
 
     def __init__(self, pins):
         self.pins = pins
+        self.width = len(pins)
         self.max = pow(2, len(pins)) - 1
 
     def write(self, value):
