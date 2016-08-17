@@ -29,6 +29,7 @@ class BusPirate(object):
     >>> # Enable the power supply and the pull-ups in the next mode switch
     >>> gw.power = True # doctest: +SKIP
     >>> gw.pullup = True # doctest: +SKIP
+    >>> gw.i2c_speed = '50kHz' # doctest: +SKIP
     >>> # Add a device so the config will apply
     >>> sensor = LM75(gw) # doctest: +SKIP
     >>> # The power and pullup is now enabled.
@@ -55,6 +56,7 @@ class BusPirate(object):
         self.power = False
         self.aux = False
         self.chip_select = False
+        self.i2c_speed = None  # default
 
         for i in range(0, 20):
             self.device.timeout = 0.1
@@ -91,6 +93,8 @@ class BusPirate(object):
             raise Exception('Could not switch mode')
         self.mode = new_mode
         self.set_peripheral()
+        if self.i2c_speed:
+            self._set_i2c_speed(self.i2c_speed)
 
     def set_peripheral(self, power=None, pullup=None, aux=None, chip_select=None):
         """ Set the peripheral config at runtime.
@@ -162,7 +166,11 @@ class BusPirate(object):
         return self.i2c_write_then_read([read_address], length)
 
     def i2c_write(self, address, data):
-        self.i2c_write_then_read(data, 0)
+        if self.mode != self.MODE_I2C:
+            self.switch_mode(self.MODE_I2C)
+        write_address = (address << 1)
+        out = bytearray([write_address]) + bytearray(data)
+        self.i2c_write_then_read(out, 0)
 
     def i2c_read_register(self, address, register, length):
         if self.mode != self.MODE_I2C:
@@ -195,3 +203,20 @@ class BusPirate(object):
 
     def _write_cs(self, value):
         self.set_peripheral(chip_select=value)
+
+    def _set_i2c_speed(self, i2c_speed):
+        """ Set I2C speed to one of '400kHz', '100kHz', 50kHz', '5kHz'
+        """
+        lower_bits_mapping = {
+            '400kHz': 3,
+            '100kHz': 2,
+            '50kHz': 1,
+            '5kHz': 0,
+        }
+        if i2c_speed not in lower_bits_mapping:
+            raise ValueError('Invalid i2c_speed')
+        speed_byte = 0b01100000 | lower_bits_mapping[i2c_speed]
+        self.device.write(bytearray([speed_byte]))
+        response = self.device.read(1)
+        if response != b"\x01":
+            raise Exception("Changing I2C speed failed. Received: {}".format(repr(response)))
