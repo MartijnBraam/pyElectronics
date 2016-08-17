@@ -166,7 +166,11 @@ class BusPirate(object):
         return self.i2c_write_then_read([read_address], length)
 
     def i2c_write(self, address, data):
-        self.i2c_write_then_read(data, 0)
+        if self.mode != self.MODE_I2C:
+            self.switch_mode(self.MODE_I2C)
+        write_address = (address << 1)
+        out = bytearray([write_address]) + bytearray(data)
+        self.i2c_write_then_read(out, 0)
 
     def i2c_read_register(self, address, register, length):
         if self.mode != self.MODE_I2C:
