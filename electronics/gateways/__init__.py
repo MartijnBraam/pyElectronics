@@ -1,3 +1,5 @@
+import platform
 from .buspirate import *
-from .linuxdevice import *
+if not platform.system() is "Windows":
+    from .linuxdevice import *
 from .mock import *
