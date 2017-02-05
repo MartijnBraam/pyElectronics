@@ -71,7 +71,11 @@ class BusPirate(object):
         self.device.timeout = 1
         self.device.flushInput()
         self.device.flushOutput()
-
+        
+    def close(self):
+        """disconnect from the hardware and make it available again."""
+        self.device.close()
+        
     def switch_mode(self, new_mode):
         """ Explicitly switch the Bus Pirate mode
 
